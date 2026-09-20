@@ -8,4 +8,19 @@ describe("generator", () => {
     expect(tools[0].description.length).toBeLessThanOrEqual(200);
     expect(JSON.stringify(tools).length/4).toBeLessThan(2000);
   });
+
+  it("caps 20-tool worst case under 2000 tokens", () => {
+    const paths: Record<string, unknown> = {};
+    for (let i = 0; i < 20; i++) {
+      paths[`/res${i}/{id}`] = {
+        get: {
+          summary: "x".repeat(500),
+          parameters: Array.from({ length: 20 }, (_, j) => ({ name: `p${j}_` + "y".repeat(30), required: true })),
+        },
+      };
+    }
+    const big = JSON.stringify({ openapi: "3.0.0", paths });
+    const tools = generateTools("openapi", big, "https://x/openapi.json");
+    expect(JSON.stringify(tools).length / 4).toBeLessThan(2000);
+  });
 });

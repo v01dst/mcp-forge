@@ -68,7 +68,7 @@ const TOOL_DEFS = [
 ];
 
 export function createServer(): Server {
-  const server = new Server({ name: "mcp-forge", version: "0.1.0" }, { capabilities: { tools: {} } });
+  const server = new Server({ name: "mcp-forge", version: "0.2.0" }, { capabilities: { tools: {} } });
 
   (server as any).setRequestHandler("tools/list", async () => ({ tools: TOOL_DEFS }));
 

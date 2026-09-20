@@ -27,4 +27,22 @@ describe("executor", () => {
     }) as unknown as typeof fetch;
     await expect(callForged(tool, {}, doFetch)).rejects.toMatchObject({ code: "EXEC_FAILED" });
   });
+
+  it("EXEC_FAILED carries a hint string", async () => {
+    const doFetch = (async () => {
+      throw new Error("boom");
+    }) as unknown as typeof fetch;
+    await expect(callForged(tool, {}, doFetch)).rejects.toMatchObject({
+      code: "EXEC_FAILED",
+      hint: expect.any(String),
+    });
+  });
+
+  it("maps AbortError to EXEC_FAILED", async () => {
+    const abort = new DOMException("aborted", "AbortError");
+    const doFetch = (async () => {
+      throw abort;
+    }) as unknown as typeof fetch;
+    await expect(callForged(tool, {}, doFetch)).rejects.toMatchObject({ code: "EXEC_FAILED" });
+  });
 });

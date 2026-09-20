@@ -47,12 +47,12 @@ export async function callForged(
       res = await doFetch(url.toString(), init);
     } catch (e: any) {
       if (e?.name === "AbortError") {
-        throw Object.assign(new Error("exec timeout"), { code: "EXEC_FAILED" });
+        throw Object.assign(new Error("exec timeout"), { code: "EXEC_FAILED", hint: "execution timed out after 15s" });
       }
-      throw Object.assign(new Error(String(e?.message ?? e)), { code: "EXEC_FAILED" });
+      throw Object.assign(new Error(String(e?.message ?? e)), { code: "EXEC_FAILED", hint: "check target API is reachable" });
     }
     if (!res.ok) {
-      throw Object.assign(new Error(`exec failed: ${res.status}`), { code: "EXEC_FAILED" });
+      throw Object.assign(new Error(`exec failed: ${res.status}`), { code: "EXEC_FAILED", hint: "target API returned error status" });
     }
     let text = await res.text();
     let truncated = false;
@@ -64,9 +64,9 @@ export async function callForged(
   } catch (e: any) {
     if (e?.code) throw e;
     if (e?.name === "AbortError") {
-      throw Object.assign(new Error("exec timeout"), { code: "EXEC_FAILED" });
+      throw Object.assign(new Error("exec timeout"), { code: "EXEC_FAILED", hint: "execution timed out after 15s" });
     }
-    throw Object.assign(new Error(String(e?.message ?? e)), { code: "EXEC_FAILED" });
+    throw Object.assign(new Error(String(e?.message ?? e)), { code: "EXEC_FAILED", hint: "check args and target API" });
   } finally {
     clearTimeout(timer);
   }
