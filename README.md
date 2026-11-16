@@ -5,7 +5,11 @@ Turn any docs URL into lean, callable MCP tools. No more pasting 1M-token API du
 ## Install
 
 ```bash
-npx mcp-forge
+git clone https://github.com/v01dst/mcp-forge
+cd mcp-forge
+npm ci
+npm run build
+npm start
 ```
 
 Requires Node >= 20.
